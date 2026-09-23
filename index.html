@@ -254,7 +254,7 @@
 <div class="container">
     <div class="header">
         <h1>歷史巨輪機率計算器</h1>
-        <p>計算對手持有軍事關鍵牌的機率</p>
+        <p>計算軍事關鍵牌的出牌機率</p>
     </div>
 
     <div class="card">
@@ -294,7 +294,7 @@
             <div class="preset-group card-type-group">
                 <div class="radio-btn small">
                     <input type="radio" name="cardType" id="type_colony" value="colony" checked onchange="updatePresets()">
-                    <label for="type_colony">地 (殖民地)</label>
+                    <label for="type_colony">殖民地</label>
                 </div>
                 <div class="radio-btn small">
                     <input type="radio" name="cardType" id="type_aggro" value="aggro" onchange="updatePresets()">
@@ -343,11 +343,11 @@
 
         <div class="input-row">
             <div class="input-group">
-                <label for="input_m">對手抽了幾張牌 (m)</label>
+                <label for="input_m">抽幾張牌 (m)</label>
                 <input type="number" id="input_m" value="3" min="1" step="1">
             </div>
             <div class="input-group">
-                <label for="input_n">對手至少有幾張關鍵牌 (n)</label>
+                <label for="input_n">至少有幾張關鍵牌 (n)</label>
                 <input type="number" id="input_n" value="1" min="1" step="1">
             </div>
         </div>
@@ -355,14 +355,14 @@
         <button class="calculate-btn" onclick="calculateProbability()">計算機率</button>
 
         <div id="result-container">
-            <div class="result-detail" id="result-text">對手至少有 1 張關鍵牌的機率為：</div>
+            <div class="result-detail" id="result-text">至少有 1 張關鍵牌的機率為：</div>
             <div class="result-prob" id="result-value">--%</div>
         </div>
     </div>
 </div>
 
 <script>
-    // 預設資料庫 (根據您提供的 Python Script)
+    // 預設資料庫 
     const TTA_DATA = {
         '2p': {
             'I':   { N: 48, k: { colony: 6, aggro: 7, def: 7, form: 10, war: 0 } },
@@ -430,7 +430,7 @@
             if (N_prime < 0 || k_prime < 0 || m < 0 || n < 0) throw new Error("數值設定錯誤：剩餘牌數或抽牌數不能為負數。");
             if (q > p) throw new Error("數值設定錯誤：看到的關鍵牌數不能大於抽牌總數。");
             if (k_prime > N_prime) throw new Error("數值設定錯誤：剩餘關鍵牌數大於總剩餘牌數。");
-            if (m > N_prime) throw new Error("數值設定錯誤：對手抽的牌大於牌庫剩餘的牌。");
+            if (m > N_prime) throw new Error("數值設定錯誤：抽的牌大於牌庫剩餘的牌。");
 
             // 開始計算
             let prob_at_least_n = 0;
@@ -458,7 +458,7 @@
 
             // 更新 UI (成功)
             resultContainer.className = '';
-            resultText.innerText = `對手至少有 ${n} 張關鍵牌的機率為：`;
+            resultText.innerText = `至少有 ${n} 張關鍵牌的機率為：`;
             resultValue.innerText = (prob_at_least_n * 100).toFixed(2) + '%';
             resultContainer.style.display = 'block';
 
