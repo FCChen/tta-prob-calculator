@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>歷史巨輪 機率計算器</title>
+    <title data-i18n="title">歷史巨輪 機率計算器</title>
     <style>
         :root {
             --primary: #4F46E5;
@@ -37,11 +37,33 @@
         .container {
             max-width: 600px;
             margin: 0 auto;
+            position: relative;
+        }
+
+        .lang-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .lang-btn:hover {
+            color: var(--text-main);
+            border-color: var(--text-muted);
         }
 
         .header {
             text-align: center;
             margin-bottom: 1.5rem;
+            padding-top: 1.5rem;
         }
 
         .header h1 {
@@ -118,7 +140,6 @@
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         }
         
-        /* Disable number input arrows */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -134,7 +155,6 @@
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
-        /* Radio Button Styling */
         .radio-group {
             display: flex;
             gap: 0.5rem;
@@ -239,7 +259,6 @@
             color: var(--text-muted);
         }
 
-        /* Preset Warning */
         .preset-warning {
             font-size: 0.75rem;
             color: var(--text-muted);
@@ -252,29 +271,30 @@
 <body>
 
 <div class="container">
+    <button class="lang-btn" onclick="toggleLang()">🌐 EN / TW</button>
     <div class="header">
-        <h1>歷史巨輪機率計算器</h1>
-        <p>計算軍事關鍵牌的出牌機率</p>
+        <h1 data-i18n="header_title">歷史巨輪機率計算器</h1>
+        <p data-i18n="header_desc">計算軍事關鍵牌的出牌機率</p>
     </div>
 
     <div class="card">
         <!-- 預設按鈕區 -->
         <div class="preset-section">
             <div class="preset-group">
-                <label>玩家人數</label>
+                <label data-i18n="label_players">玩家人數</label>
                 <div class="radio-group">
                     <div class="radio-btn">
                         <input type="radio" name="players" id="2p" value="2p" checked onchange="updatePresets()">
-                        <label for="2p">2 人局</label>
+                        <label for="2p" data-i18n="label_2p">2 人局</label>
                     </div>
                     <div class="radio-btn">
                         <input type="radio" name="players" id="4p" value="4p" onchange="updatePresets()">
-                        <label for="4p">4 人局</label>
+                        <label for="4p" data-i18n="label_4p">3/4 人局</label>
                     </div>
                 </div>
             </div>
             <div class="preset-group">
-                <label>時代 (Age)</label>
+                <label data-i18n="label_age">時代 (Age)</label>
                 <div class="radio-group">
                     <div class="radio-btn">
                         <input type="radio" name="age" id="age1" value="I" checked onchange="updatePresets()">
@@ -294,23 +314,23 @@
             <div class="preset-group card-type-group">
                 <div class="radio-btn small">
                     <input type="radio" name="cardType" id="type_colony" value="colony" checked onchange="updatePresets()">
-                    <label for="type_colony">殖民地</label>
+                    <label for="type_colony" data-i18n="label_colony">殖民地</label>
                 </div>
                 <div class="radio-btn small">
                     <input type="radio" name="cardType" id="type_aggro" value="aggro" onchange="updatePresets()">
-                    <label for="type_aggro">Aggro</label>
+                    <label for="type_aggro" data-i18n="label_aggro">Aggro</label>
                 </div>
                 <div class="radio-btn small">
                     <input type="radio" name="cardType" id="type_def" value="def" onchange="updatePresets()">
-                    <label for="type_def">D卡</label>
+                    <label for="type_def" data-i18n="label_def">D卡</label>
                 </div>
                 <div class="radio-btn small">
                     <input type="radio" name="cardType" id="type_form" value="form" onchange="updatePresets()">
-                    <label for="type_form">陣型</label>
+                    <label for="type_form" data-i18n="label_form">陣型</label>
                 </div>
                 <div class="radio-btn small">
                     <input type="radio" name="cardType" id="type_war" value="war" onchange="updatePresets()">
-                    <label for="type_war">WAR</label>
+                    <label for="type_war" data-i18n="label_war">WAR</label>
                 </div>
             </div>
         </div>
@@ -320,39 +340,39 @@
         <!-- 數值輸入區 -->
         <div class="input-row">
             <div class="input-group">
-                <label for="input_N">牌庫原始總張數 (N)</label>
+                <label for="input_N" data-i18n="label_N">牌庫原始總張數 (N)</label>
                 <input type="number" id="input_N" value="48" min="1" step="1">
-                <div class="preset-warning"><span>點擊上方按鈕會自動帶入預設值</span></div>
+                <div class="preset-warning"><span data-i18n="warn_preset">點擊上方按鈕會自動帶入預設值</span></div>
             </div>
             <div class="input-group">
-                <label for="input_k">關鍵牌總張數 (k)</label>
+                <label for="input_k" data-i18n="label_k">關鍵牌總張數 (k)</label>
                 <input type="number" id="input_k" value="6" min="0" step="1">
             </div>
         </div>
 
         <div class="input-row">
             <div class="input-group">
-                <label for="input_p">你已看過的牌數 (p)</label>
+                <label for="input_p" data-i18n="label_p">你已看過的牌數 (p)</label>
                 <input type="number" id="input_p" value="0" min="0" step="1">
             </div>
             <div class="input-group">
-                <label for="input_q">你看到的關鍵牌數 (q)</label>
+                <label for="input_q" data-i18n="label_q">你看到的關鍵牌數 (q)</label>
                 <input type="number" id="input_q" value="0" min="0" step="1">
             </div>
         </div>
 
         <div class="input-row">
             <div class="input-group">
-                <label for="input_m">抽幾張牌 (m)</label>
+                <label for="input_m" data-i18n="label_m">抽幾張牌 (m)</label>
                 <input type="number" id="input_m" value="3" min="1" step="1">
             </div>
             <div class="input-group">
-                <label for="input_n">至少有幾張關鍵牌 (n)</label>
+                <label for="input_n" data-i18n="label_n">至少有幾張關鍵牌 (n)</label>
                 <input type="number" id="input_n" value="1" min="1" step="1">
             </div>
         </div>
 
-        <button class="calculate-btn" onclick="calculateProbability()">計算機率</button>
+        <button class="calculate-btn" onclick="calculateProbability()" data-i18n="btn_calc">計算機率</button>
 
         <div id="result-container">
             <div class="result-detail" id="result-text">至少有 1 張關鍵牌的機率為：</div>
@@ -362,12 +382,91 @@
 </div>
 
 <script>
+    // i18n 多國語言字典
+    const i18n = {
+        'TW': {
+            'title': '歷史巨輪 機率計算器',
+            'header_title': '歷史巨輪機率計算器',
+            'header_desc': '計算軍事關鍵牌的出牌機率',
+            'label_players': '玩家人數',
+            'label_2p': '2 人局',
+            'label_4p': '3/4 人局',
+            'label_age': '時代 (Age)',
+            'label_colony': '殖民地',
+            'label_aggro': 'Aggro',
+            'label_def': 'D卡',
+            'label_form': '陣型',
+            'label_war': 'WAR',
+            'label_N': '牌庫原始總張數 (N)',
+            'label_k': '關鍵牌總張數 (k)',
+            'label_p': '你已看過的牌數 (p)',
+            'label_q': '你看到的關鍵牌數 (q)',
+            'label_m': '抽幾張牌 (m)',
+            'label_n': '至少有幾張關鍵牌 (n)',
+            'btn_calc': '計算機率',
+            'warn_preset': '點擊上方按鈕會自動帶入預設值',
+            'result_text': '至少有 {n} 張關鍵牌的機率為：',
+            'err_invalid': '請輸入有效的數字。',
+            'err_neg': '數值設定錯誤：剩餘牌數或抽牌數不能為負數。',
+            'err_q_gt_p': '數值設定錯誤：看到的關鍵牌數不能大於抽牌總數。',
+            'err_k_gt_N': '數值設定錯誤：剩餘關鍵牌數大於總剩餘牌數。',
+            'err_m_gt_N': '數值設定錯誤：抽的牌大於牌庫剩餘的牌。',
+            'err_calc': '計算錯誤'
+        },
+        'EN': {
+            'title': 'TTA Prob Calculator',
+            'header_title': 'TTA Probability Calculator',
+            'header_desc': 'Calculate the draw probability of military key cards',
+            'label_players': 'Player Count',
+            'label_2p': '2 Players',
+            'label_4p': '3/4 Players',
+            'label_age': 'Age',
+            'label_colony': 'Colony',
+            'label_aggro': 'Aggress',
+            'label_def': 'Defense',
+            'label_form': 'Tactic',
+            'label_war': 'War',
+            'label_N': 'Initial Deck Size (N)',
+            'label_k': 'Total Key Cards (k)',
+            'label_p': 'Cards you have seen (p)',
+            'label_q': 'Key cards you have seen (q)',
+            'label_m': 'Cards to draw (m)',
+            'label_n': 'At least X key cards (n)',
+            'btn_calc': 'Calculate Probability',
+            'warn_preset': 'Auto-filled based on presets above',
+            'result_text': 'Probability of at least {n} key card(s):',
+            'err_invalid': 'Please enter valid numbers.',
+            'err_neg': 'Error: Remaining cards or draw count cannot be negative.',
+            'err_q_gt_p': 'Error: Seen key cards cannot exceed total seen cards.',
+            'err_k_gt_N': 'Error: Remaining key cards exceed total remaining deck.',
+            'err_m_gt_N': 'Error: Cards to draw exceed remaining deck.',
+            'err_calc': 'Calculation Error'
+        }
+    };
+
+    let currentLang = 'TW';
+    let isCalculated = false;
+
+    function toggleLang() {
+        currentLang = (currentLang === 'TW') ? 'EN' : 'TW';
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if(i18n[currentLang][key]) {
+                el.innerText = i18n[currentLang][key];
+            }
+        });
+        // 重新渲染結果區塊（如果已經計算過）
+        if(isCalculated) {
+            calculateProbability();
+        }
+    }
+
     // 預設資料庫 
     const TTA_DATA = {
         '2p': {
             'I':   { N: 48, k: { colony: 6, aggro: 7, def: 7, form: 10, war: 0 } },
-            'II':  { N: 52, k: { colony: 7, aggro: 9, def: 7, form: 7,  war: 4 } }, // WAR = 2+2
-            'III': { N: 47, k: { colony: 0, aggro: 9, def: 7, form: 7,  war: 7 } }  // WAR = 6+1
+            'II':  { N: 52, k: { colony: 7, aggro: 9, def: 7, form: 7,  war: 4 } },
+            'III': { N: 47, k: { colony: 0, aggro: 9, def: 7, form: 7,  war: 7 } }
         },
         '4p': {
             'I':   { N: 51, k: { colony: 6, aggro: 7, def: 7, form: 10, war: 0 } },
@@ -376,7 +475,6 @@
         }
     };
 
-    // 根據上方按鈕選項，連動更新 N 和 k 的值
     function updatePresets() {
         const players = document.querySelector('input[name="players"]:checked').value;
         const age = document.querySelector('input[name="age"]:checked').value;
@@ -387,15 +485,14 @@
         document.getElementById('input_N').value = data.N;
         document.getElementById('input_k').value = data.k[cardType];
         
-        // 改變設定時，先隱藏計算結果
         document.getElementById('result-container').style.display = 'none';
+        isCalculated = false;
     }
 
-    // 計算組合數 (相當於 Python 的 math.comb)
     function combinations(n, r) {
         if (r < 0 || r > n) return 0;
         if (r === 0 || r === n) return 1;
-        if (r > n / 2) r = n - r; // 優化效能
+        if (r > n / 2) r = n - r; 
         
         let res = 1;
         for (let i = 1; i <= r; i++) {
@@ -405,14 +502,12 @@
         return Math.round(res); 
     }
 
-    // 執行機率計算 (完全對應 Python 的邏輯)
     function calculateProbability() {
         const resultContainer = document.getElementById('result-container');
         const resultValue = document.getElementById('result-value');
         const resultText = document.getElementById('result-text');
         
         try {
-            // 讀取輸入值
             const N = parseInt(document.getElementById('input_N').value, 10);
             const k = parseInt(document.getElementById('input_k').value, 10);
             const p = parseInt(document.getElementById('input_p').value, 10) || 0;
@@ -420,19 +515,16 @@
             const m = parseInt(document.getElementById('input_m').value, 10) || 0;
             const n = parseInt(document.getElementById('input_n').value, 10) || 1;
 
-            // 計算剩餘未知的牌數與關鍵牌數
             const N_prime = N - p;
             const k_prime = k - q;
             const non_key_prime = N_prime - k_prime;
 
-            // 防呆與驗證
-            if (isNaN(N) || isNaN(k)) throw new Error("請輸入有效的數字。");
-            if (N_prime < 0 || k_prime < 0 || m < 0 || n < 0) throw new Error("數值設定錯誤：剩餘牌數或抽牌數不能為負數。");
-            if (q > p) throw new Error("數值設定錯誤：看到的關鍵牌數不能大於抽牌總數。");
-            if (k_prime > N_prime) throw new Error("數值設定錯誤：剩餘關鍵牌數大於總剩餘牌數。");
-            if (m > N_prime) throw new Error("數值設定錯誤：抽的牌大於牌庫剩餘的牌。");
+            if (isNaN(N) || isNaN(k)) throw new Error(i18n[currentLang]['err_invalid']);
+            if (N_prime < 0 || k_prime < 0 || m < 0 || n < 0) throw new Error(i18n[currentLang]['err_neg']);
+            if (q > p) throw new Error(i18n[currentLang]['err_q_gt_p']);
+            if (k_prime > N_prime) throw new Error(i18n[currentLang]['err_k_gt_N']);
+            if (m > N_prime) throw new Error(i18n[currentLang]['err_m_gt_N']);
 
-            // 開始計算
             let prob_at_least_n = 0;
             
             if (n === 0) {
@@ -452,26 +544,24 @@
                         prob_less_than_n += prob_i;
                     }
                 }
-                
                 prob_at_least_n = 1.0 - prob_less_than_n;
             }
 
-            // 更新 UI (成功)
             resultContainer.className = '';
-            resultText.innerText = `至少有 ${n} 張關鍵牌的機率為：`;
+            resultText.innerText = i18n[currentLang]['result_text'].replace('{n}', n);
             resultValue.innerText = (prob_at_least_n * 100).toFixed(2) + '%';
             resultContainer.style.display = 'block';
+            isCalculated = true;
 
         } catch (error) {
-            // 更新 UI (錯誤處理)
             resultContainer.className = 'error';
-            resultText.innerText = '計算錯誤';
+            resultText.innerText = i18n[currentLang]['err_calc'];
             resultValue.innerText = error.message;
             resultContainer.style.display = 'block';
+            isCalculated = true;
         }
     }
 
-    // 網頁載入時自動設定一次預設值
     window.onload = updatePresets;
 </script>
 </body>
