@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>歷史巨輪 機率計算器</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border: #E5E7EB;
+            --error: #EF4444;
+            --success-bg: #ECFDF5;
+            --success-text: #047857;
+            --success-border: #34D399;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 1rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .header p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .preset-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .preset-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .card-type-group {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .card-type-group .radio-group {
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        
+        /* Disable number input arrows */
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* Radio Button Styling */
+        .radio-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .radio-btn {
+            flex: 1;
+            position: relative;
+        }
+
+        .radio-btn input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .radio-btn label {
+            display: block;
+            padding: 0.5rem 0;
+            text-align: center;
+            background-color: #F3F4F6;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            margin-bottom: 0;
+        }
+        
+        .radio-btn.small label {
+            font-size: 0.75rem;
+            padding: 0.4rem 0;
+        }
+
+        .radio-btn input[type="radio"]:checked + label {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .divider {
+            height: 1px;
+            background-color: var(--border);
+            margin: 1.25rem 0;
+        }
+
+        button.calculate-btn {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        button.calculate-btn:hover {
+            background-color: var(--primary-hover);
+        }
+        
+        button.calculate-btn:active {
+            transform: scale(0.98);
+        }
+
+        #result-container {
+            display: none;
+            margin-top: 1rem;
+            padding: 1.25rem;
+            border-radius: 12px;
+            background-color: var(--success-bg);
+            border: 1px solid var(--success-border);
+            text-align: center;
+        }
+        
+        #result-container.error {
+            background-color: #FEF2F2;
+            border-color: #F87171;
+            color: var(--error);
+        }
+
+        .result-prob {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--success-text);
+            line-height: 1.2;
+            margin: 0.5rem 0;
+        }
+        
+        #result-container.error .result-prob {
+            font-size: 1.25rem;
+            color: var(--error);
+        }
+
+        .result-detail {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Preset Warning */
+        .preset-warning {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>歷史巨輪機率計算器</h1>
+        <p>計算對手持有軍事關鍵牌的機率</p>
+    </div>
+
+    <div class="card">
+        <!-- 預設按鈕區 -->
+        <div class="preset-section">
+            <div class="preset-group">
+                <label>玩家人數</label>
+                <div class="radio-group">
+                    <div class="radio-btn">
+                        <input type="radio" name="players" id="2p" value="2p" checked onchange="updatePresets()">
+                        <label for="2p">2 人局</label>
+                    </div>
+                    <div class="radio-btn">
+                        <input type="radio" name="players" id="4p" value="4p" onchange="updatePresets()">
+                        <label for="4p">4 人局</label>
+                    </div>
+                </div>
+            </div>
+            <div class="preset-group">
+                <label>時代 (Age)</label>
+                <div class="radio-group">
+                    <div class="radio-btn">
+                        <input type="radio" name="age" id="age1" value="I" checked onchange="updatePresets()">
+                        <label for="age1">Age I</label>
+                    </div>
+                    <div class="radio-btn">
+                        <input type="radio" name="age" id="age2" value="II" onchange="updatePresets()">
+                        <label for="age2">Age II</label>
+                    </div>
+                    <div class="radio-btn">
+                        <input type="radio" name="age" id="age3" value="III" onchange="updatePresets()">
+                        <label for="age3">Age III</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preset-group card-type-group">
+                <div class="radio-btn small">
+                    <input type="radio" name="cardType" id="type_colony" value="colony" checked onchange="updatePresets()">
+                    <label for="type_colony">地 (殖民地)</label>
+                </div>
+                <div class="radio-btn small">
+                    <input type="radio" name="cardType" id="type_aggro" value="aggro" onchange="updatePresets()">
+                    <label for="type_aggro">Aggro</label>
+                </div>
+                <div class="radio-btn small">
+                    <input type="radio" name="cardType" id="type_def" value="def" onchange="updatePresets()">
+                    <label for="type_def">D卡</label>
+                </div>
+                <div class="radio-btn small">
+                    <input type="radio" name="cardType" id="type_form" value="form" onchange="updatePresets()">
+                    <label for="type_form">陣型</label>
+                </div>
+                <div class="radio-btn small">
+                    <input type="radio" name="cardType" id="type_war" value="war" onchange="updatePresets()">
+                    <label for="type_war">WAR</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 數值輸入區 -->
+        <div class="input-row">
+            <div class="input-group">
+                <label for="input_N">牌庫原始總張數 (N)</label>
+                <input type="number" id="input_N" value="48" min="1" step="1">
+                <div class="preset-warning"><span>點擊上方按鈕會自動帶入預設值</span></div>
+            </div>
+            <div class="input-group">
+                <label for="input_k">關鍵牌總張數 (k)</label>
+                <input type="number" id="input_k" value="6" min="0" step="1">
+            </div>
+        </div>
+
+        <div class="input-row">
+            <div class="input-group">
+                <label for="input_p">你已看過的牌數 (p)</label>
+                <input type="number" id="input_p" value="0" min="0" step="1">
+            </div>
+            <div class="input-group">
+                <label for="input_q">你看到的關鍵牌數 (q)</label>
+                <input type="number" id="input_q" value="0" min="0" step="1">
+            </div>
+        </div>
+
+        <div class="input-row">
+            <div class="input-group">
+                <label for="input_m">對手抽了幾張牌 (m)</label>
+                <input type="number" id="input_m" value="3" min="1" step="1">
+            </div>
+            <div class="input-group">
+                <label for="input_n">對手至少有幾張關鍵牌 (n)</label>
+                <input type="number" id="input_n" value="1" min="1" step="1">
+            </div>
+        </div>
+
+        <button class="calculate-btn" onclick="calculateProbability()">計算機率</button>
+
+        <div id="result-container">
+            <div class="result-detail" id="result-text">對手至少有 1 張關鍵牌的機率為：</div>
+            <div class="result-prob" id="result-value">--%</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 預設資料庫 (根據您提供的 Python Script)
+    const TTA_DATA = {
+        '2p': {
+            'I':   { N: 48, k: { colony: 6, aggro: 7, def: 7, form: 10, war: 0 } },
+            'II':  { N: 52, k: { colony: 7, aggro: 9, def: 7, form: 7,  war: 4 } }, // WAR = 2+2
+            'III': { N: 47, k: { colony: 0, aggro: 9, def: 7, form: 7,  war: 7 } }  // WAR = 6+1
+        },
+        '4p': {
+            'I':   { N: 51, k: { colony: 6, aggro: 7, def: 7, form: 10, war: 0 } },
+            'II':  { N: 56, k: { colony: 7, aggro: 9, def: 7, form: 7,  war: 4 } },
+            'III': { N: 51, k: { colony: 0, aggro: 9, def: 7, form: 7,  war: 7 } }
+        }
+    };
+
+    // 根據上方按鈕選項，連動更新 N 和 k 的值
+    function updatePresets() {
+        const players = document.querySelector('input[name="players"]:checked').value;
+        const age = document.querySelector('input[name="age"]:checked').value;
+        const cardType = document.querySelector('input[name="cardType"]:checked').value;
+
+        const data = TTA_DATA[players][age];
+        
+        document.getElementById('input_N').value = data.N;
+        document.getElementById('input_k').value = data.k[cardType];
+        
+        // 改變設定時，先隱藏計算結果
+        document.getElementById('result-container').style.display = 'none';
+    }
+
+    // 計算組合數 (相當於 Python 的 math.comb)
+    function combinations(n, r) {
+        if (r < 0 || r > n) return 0;
+        if (r === 0 || r === n) return 1;
+        if (r > n / 2) r = n - r; // 優化效能
+        
+        let res = 1;
+        for (let i = 1; i <= r; i++) {
+            res *= n - i + 1;
+            res /= i;
+        }
+        return Math.round(res); 
+    }
+
+    // 執行機率計算 (完全對應 Python 的邏輯)
+    function calculateProbability() {
+        const resultContainer = document.getElementById('result-container');
+        const resultValue = document.getElementById('result-value');
+        const resultText = document.getElementById('result-text');
+        
+        try {
+            // 讀取輸入值
+            const N = parseInt(document.getElementById('input_N').value, 10);
+            const k = parseInt(document.getElementById('input_k').value, 10);
+            const p = parseInt(document.getElementById('input_p').value, 10) || 0;
+            const q = parseInt(document.getElementById('input_q').value, 10) || 0;
+            const m = parseInt(document.getElementById('input_m').value, 10) || 0;
+            const n = parseInt(document.getElementById('input_n').value, 10) || 1;
+
+            // 計算剩餘未知的牌數與關鍵牌數
+            const N_prime = N - p;
+            const k_prime = k - q;
+            const non_key_prime = N_prime - k_prime;
+
+            // 防呆與驗證
+            if (isNaN(N) || isNaN(k)) throw new Error("請輸入有效的數字。");
+            if (N_prime < 0 || k_prime < 0 || m < 0 || n < 0) throw new Error("數值設定錯誤：剩餘牌數或抽牌數不能為負數。");
+            if (q > p) throw new Error("數值設定錯誤：看到的關鍵牌數不能大於抽牌總數。");
+            if (k_prime > N_prime) throw new Error("數值設定錯誤：剩餘關鍵牌數大於總剩餘牌數。");
+            if (m > N_prime) throw new Error("數值設定錯誤：對手抽的牌大於牌庫剩餘的牌。");
+
+            // 開始計算
+            let prob_at_least_n = 0;
+            
+            if (n === 0) {
+                prob_at_least_n = 1.0;
+            } else if (n > k_prime || n > m) {
+                prob_at_least_n = 0.0;
+            } else {
+                const total_combinations = combinations(N_prime, m);
+                let prob_less_than_n = 0.0;
+                
+                for (let i = 0; i < n; i++) {
+                    if (i <= k_prime && (m - i) <= non_key_prime) {
+                        const comb_key = combinations(k_prime, i);
+                        const comb_non_key = combinations(non_key_prime, m - i);
+                        
+                        const prob_i = (comb_key * comb_non_key) / total_combinations;
+                        prob_less_than_n += prob_i;
+                    }
+                }
+                
+                prob_at_least_n = 1.0 - prob_less_than_n;
+            }
+
+            // 更新 UI (成功)
+            resultContainer.className = '';
+            resultText.innerText = `對手至少有 ${n} 張關鍵牌的機率為：`;
+            resultValue.innerText = (prob_at_least_n * 100).toFixed(2) + '%';
+            resultContainer.style.display = 'block';
+
+        } catch (error) {
+            // 更新 UI (錯誤處理)
+            resultContainer.className = 'error';
+            resultText.innerText = '計算錯誤';
+            resultValue.innerText = error.message;
+            resultContainer.style.display = 'block';
+        }
+    }
+
+    // 網頁載入時自動設定一次預設值
+    window.onload = updatePresets;
+</script>
+</body>
+</html>
